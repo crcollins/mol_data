@@ -9,46 +9,55 @@ Each one of these sub folders contains 10 files, and 1 folder (The noopt dir doe
 The indo_x.txt files correspond to INDO with (default parameters, parameters fit to B3LYP, parameters fit to CAM-B3LYP, parameters fit to M06HF). NOTE: The INDO data sets are 1 datapoint smaller than the other datasets because for some reason `11` does not work with INDO.
 
 
+	.
 	├── noopt
-	│   └── geoms
-	├── N
-	│	b3lyp.csv
-	│	b3lyp.txt
-	│	cam.csv
-	│	cam.txt
-	│	m06hf.csv
-	│	m06hf.txt
-	│	indo_default.txt
-	│	indo_b3lyp.txt
-	│	indo_cam.txt
-	│	indo_m06hf.txt
-	├── O
-	│	...
+	│   ├── geoms
+	│   │   ├── mol2
+	│   │   └── out
+	│   ├── indo_cam.txt
+	│   ├── indo_default.txt
+	│   ├── N
+	│   │   ├── b3lyp.csv
+	│   │   ├── b3lyp.txt
+	│   │   ├── cam.csv
+	│   │   ├── cam.txt
+	│   │   ├── m06hf.csv
+	│   │   └── m06hf.txt
+	│   └── O
+	│       ├── b3lyp.csv
+	│       ├── b3lyp.txt
+	│       ├── cam.csv
+	│       ├── cam.txt
+	│       ├── m06hf.csv
+	│       └── m06hf.txt
 	└── opt
-		├── b3lyp
-		│	├── geoms
-		│	│	├── mol2
-		│	│	└── out
-		│	├── N
-		│	│	...
-		│	└── O
-		│		...
-		├── cam
-		│	├── geoms
-		│	│	├── mol2
-		│	│	└── out
-		│	├── N
-		│	│	...
-		│	└── O
-		│		...
-		└── m06hf
-			├── geoms
-			│	├── mol2
-			│	└── out
-			├── N
-			│	...
-			└── O
-				...
+	    ├── b3lyp
+	    │   ├── geoms
+	    │   │   ├── mol2
+	    │   │   └── out
+	    │   ├── ...
+	    │   ├── N
+	    │   │   └── ...
+	    │   └── O
+	    │       └── ...
+	    ├── cam
+	    │   ├── geoms
+	    │   │   ├── mol2
+	    │   │   └── out
+	    │   ├── ...
+	    │   ├── N
+	    │   │   └── ...
+	    │   └── O
+	    │       └── ...
+	    └── m06hf
+	        ├── geoms
+	        │   ├── mol2
+	        │   └── out
+	        ├── ...
+	        ├── N
+	        │   └── ...
+	        └── O
+	            └── ...
 
 
 The CSV files have the following columns (and units):

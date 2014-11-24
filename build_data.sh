@@ -33,7 +33,7 @@ do
 			x=$(wc -l $geoms_out/$f | sed -e 's/ .*$//'); sed -e "1s/^/$x\n\n/" $geoms_out/$f > $geoms_mol2/$f;
 		done
 
-		for f in `ls $geoms_mol2`;
+		for f in `ls $geoms_mol2 | sed -e '/.mol2/d'`;
 		do
 			babel -ixyz $geoms_mol2/$f -omol2 $geoms_mol2/${f/.out/}.mol2;
 		done

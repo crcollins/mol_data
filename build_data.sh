@@ -36,7 +36,7 @@ do
 
 		for f in `ls $geoms_mol2 | sed -e '/.mol2/d'`;
 		do
-			babel -ixyz $geoms_mol2/$f -omol2 $geoms_mol2/${f/.out/}.mol2;
+			babel -ixyz $geoms_mol2/$f -omol2 $geoms_mol2/${f/.out/}.mol2 > /dev/null 2>&1;
 		done
 		rm $geoms_mol2/*.out;
 

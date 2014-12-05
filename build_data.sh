@@ -67,9 +67,9 @@ EOF
 		done
 
 		SCRIPT="from sys import stdin, stdout; stdout.writelines(sorted(stdin, key=lambda x: x.split()[0]))"
-		for f in `ls projects/repulse/unix/results/$path/indo*.txt | sed -e's/.*indo/indo/'` ;
+		for f in `ls projects/repulse/unix/results/$path/$start/indo*.txt | sed -e's/.*indo/indo/'` ;
 		do
-			python -c "$SCRIPT" < projects/repulse/unix/results/$path/$f > $main/$path/$start/$f ;
+			python -c "$SCRIPT" < projects/repulse/unix/results/$path/$start/$f > $main/$path/$start/$f ;
 		done
 	done
 done

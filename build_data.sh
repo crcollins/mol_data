@@ -65,7 +65,13 @@ with open("$main/$path/$start/$subpath.csv", "r") as f, open("$main/$path/$start
             f2.write(' '.join(row[x] for x in (1,5,6,10)) + '\n')
 EOF
 		done
-		cp projects/repulse/unix/data/$path/indo*.txt $main/$path
+
+		SCRIPT="from sys import stdin, stdout; stdout.writelines(sorted(stdin, key=lambda x: x.split()[0]))"
+		for f in `ls projects/repulse/unix/results/$path/indo*.txt | sed -e's/.*indo/indo/'` ;
+		do
+			python -c "$SCRIPT" < projects/repulse/unix/results/$path/$f > $main/$path/$start/$f ;
+		done
 	done
 done
 tar -cjf mol_data.tar.bz2 mol_data
+

@@ -2,9 +2,16 @@
 
 rm -rf mol_data/
 main=mol_data
+
+if [ -z "$1" ] ;
+then
+	base=mols
+else
+	base=$1
+fi
 mkdir -p $main
 
-for molset in mols mols2;
+for molset in $(ls $base);
 do
 	for path in opt/{b3lyp,cam,m06hf} noopt;
 	do
@@ -14,9 +21,10 @@ do
 		mkdir -p $geoms_out
 		geoms_mol2=$geoms/mol2
 		mkdir -p $geoms_mol2
+		datadir=$base/$molset
 
 		# Build INDO input files (simple xyz format)
-		cp -f $molset/$path/b3lyp/*.gjf $geoms
+		cp -f $datadir/$path/b3lyp/*.gjf $geoms
 		for f in `ls $geoms`;
 		do
 			mv "$geoms/${f}" "$geoms/${f/_TD/}" 2>/dev/null;
@@ -40,24 +48,17 @@ do
 		done
 		rm $geoms_mol2/*.out;
 
-		if [[ "$molset" == *2 ]]
-		then
-			start=N
-		else
-			start=O
-		fi
-
-		mkdir -p $main/$path/{O,N}
+		mkdir -p $main/$path/$molset
 
 		# Collect all DFT data
 		for subpath in b3lyp cam m06hf
 		do
-			python fileparser.py -L -f $molset/$path/$subpath | tail -n+2 | sed -e '/^$/d' > $main/$path/$start/$subpath.csv
+			python fileparser.py -L -f $datadir/$path/$subpath | tail -n+2 | sed -e '/^$/d' > $main/$path/$molset/$subpath.csv
 			python - <<EOF
 import csv
 import operator
 
-with open("$main/$path/$start/$subpath.csv", "r") as f, open("$main/$path/$start/$subpath.txt", "w") as f2:
+with open("$main/$path/$molset/$subpath.csv", "r") as f, open("$main/$path/$molset/$subpath.txt", "w") as f2:
     reader = csv.reader(f, delimiter=',', quotechar='"')
     sortedlist = sorted(reader, key=operator.itemgetter(1))
     for row in sortedlist:
@@ -67,9 +68,9 @@ EOF
 		done
 
 		SCRIPT="from sys import stdin, stdout; stdout.writelines(sorted(stdin, key=lambda x: x.split()[0]))"
-		for f in `ls projects/repulse/unix/results/$path/$start/indo*.txt | sed -e's/.*indo/indo/'` ;
+		for f in `ls projects/repulse/unix/results/$path/$molset/indo*.txt | sed -e's/.*indo/indo/'` ;
 		do
-			python -c "$SCRIPT" < projects/repulse/unix/results/$path/$start/$f > $main/$path/$start/$f ;
+			python -c "$SCRIPT" < projects/repulse/unix/results/$path/$molset/$f > $main/$path/$molset/$f ;
 		done
 	done
 done

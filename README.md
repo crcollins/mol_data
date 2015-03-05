@@ -75,9 +75,8 @@ The Exact Name and Feature Vector name columns currently have no significance fo
 
 The TXT files have the following columns (and units):
 
-Structure Name, HOMO (eV), LUMO (eV), Band Gap (eV)
+Structure Name, HOMO (eV), LUMO (eV), Excitation Energy (eV)
 
-
-All of the structures in this data set are made up of conjugated systems of only Carbon, Hydrogen, and Oxygen. All of these structures are composed of 4 or fewer ring/aryl backbone parts. Many of the structures are the same structure with a 180 degree dihedral flip between two rings (denoted as a `-` in the name AFTER the ring it affects). These systems also have the restriction that all of the ring units are all the same through the chain.
+All of the structures in this data set are made up of conjugated systems of only Carbon, Hydrogen, Oxygen, and Nitrogen. All of these structures are composed of 4 or fewer ring/aryl backbone parts. Many of the structures are the same structure with a 180 degree dihedral flip between two rings (denoted as a `-` in the name AFTER the ring it affects). These systems also have the restriction that all of the ring units are all the same through the chain.
 
 

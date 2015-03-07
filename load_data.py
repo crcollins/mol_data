@@ -115,8 +115,6 @@ def build_norm_name_data_table(data):
         conn.commit()
 
 
-
-
 def export_database():
     methods = ["b3lyp", "cam", "m06hf"]
     indo_methods = ["indo_" + x for x in ["default"] + methods]
@@ -126,7 +124,7 @@ def export_database():
     calcsets = methods + indo_methods
 
 
-    names, data = load_data(optsets, structsets, calcsets, fill_null=False)
+    names, data = load_data_for_db_insert(optsets, structsets, calcsets, fill_null=False)
 
     build_datasets_table(optsets, structsets, calcsets)
     build_data_table(data)
@@ -140,14 +138,14 @@ def export_norm_name_database():
     structsets = ['O', 'N', "rot"]
     calcsets = methods + indo_methods
 
-    names, nulled = load_data(optsets, structsets, calcsets, fill_null=True)
+    names, nulled = load_data_for_db_insert(optsets, structsets, calcsets, fill_null=True)
 
     build_datasets_table(optsets, structsets, calcsets)
     build_names_table(names)
     build_data_table(nulled)
 
 
-def load_data(optsets, structsets, calcsets, fill_null=True):
+def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=True):
     names = {}
     for optset in optsets:
         for structset in structsets:

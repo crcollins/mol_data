@@ -3,6 +3,14 @@ import sqlite3
 from itertools import product
 
 
+methods = ["b3lyp", "cam", "m06hf"]
+indo_methods = ["indo_" + x for x in ["default"] + methods]
+
+OPTSETS = ["noopt"] + [os.path.join("opt", x) for x in methods]
+STRUCTSETS = ['O', 'N', "rot"]
+CALCSETS = methods + indo_methods
+
+
 def build_datasets_table(optsets, structsets, calcsets):
     with sqlite3.connect("database.sqlite") as conn:
         conn.execute("DROP TABLE IF EXISTS datasets")
@@ -116,31 +124,16 @@ def build_norm_name_data_table(data):
 
 
 def export_database():
-    methods = ["b3lyp", "cam", "m06hf"]
-    indo_methods = ["indo_" + x for x in ["default"] + methods]
+    names, data = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS, fill_null=False)
 
-    optsets = ["noopt"] + [os.path.join("opt", x) for x in methods]
-    structsets = ['O', 'N', "rot"]
-    calcsets = methods + indo_methods
-
-
-    names, data = load_data_for_db_insert(optsets, structsets, calcsets, fill_null=False)
-
-    build_datasets_table(optsets, structsets, calcsets)
+    build_datasets_table(OPTSETS, STRUCTSETS, CALCSETS)
     build_data_table(data)
 
 
 def export_norm_name_database():
-    methods = ["b3lyp", "cam", "m06hf"]
-    indo_methods = ["indo_" + x for x in ["default"] + methods]
+    names, nulled = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS, fill_null=True)
 
-    optsets = ["noopt"] + [os.path.join("opt", x) for x in methods]
-    structsets = ['O', 'N', "rot"]
-    calcsets = methods + indo_methods
-
-    names, nulled = load_data_for_db_insert(optsets, structsets, calcsets, fill_null=True)
-
-    build_datasets_table(optsets, structsets, calcsets)
+    build_datasets_table(OPTSETS, STRUCTSETS, CALCSETS)
     build_names_table(names)
     build_data_table(nulled)
 

@@ -123,19 +123,19 @@ def build_norm_name_data_table(data):
         conn.commit()
 
 
-def export_database():
-    names, data = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS, fill_null=False)
+def export_database(fill_null=False):
+    names, data = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS, fill_null=fill_null)
 
     build_datasets_table(OPTSETS, STRUCTSETS, CALCSETS)
     build_data_table(data)
 
 
-def export_norm_name_database():
-    names, nulled = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS, fill_null=True)
+def export_norm_name_database(fill_null=True):
+    names, data = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS, fill_null=fill_null)
 
     build_datasets_table(OPTSETS, STRUCTSETS, CALCSETS)
     build_names_table(names)
-    build_data_table(nulled)
+    build_norm_name_data_table(data)
 
 
 def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=True):
@@ -157,7 +157,7 @@ def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=True):
                         except KeyError:
                             names[name] = {(optset, structset, calcset): payload}
 
-    nulled = []
+    data = []
     for optset in optsets:
         for structset in structsets:
             for calcset in calcsets:
@@ -169,9 +169,10 @@ def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=True):
                             temp = names[name].get((optset, structset, calcset))
                         else:
                             continue
-                    nulled.append([name] + temp + [optset, structset, calcset])
-    return sorted(names), nulled
+                    data.append([name] + temp + [optset, structset, calcset])
+    return sorted(names), data
 
 
-# export_database()
-export_norm_name_database()
+if __name__ == "__main__":
+    export_database(fill_null=True)
+    # export_norm_name_database(fill_null=True)

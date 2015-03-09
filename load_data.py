@@ -206,7 +206,9 @@ def load_data_from_db(prop=None, optsets=None, structsets=None, calcsets=None):
                 data.append((name, [float(x) if x else None for x in values.split(',')]))
             except:
                 pass
-    return data
+
+    columns = [x[0] for x in conn.execute("SELECT optset ||'/'|| structset ||'/'|| calcset FROM datasets WHERE %s" % (where_cond, ))]
+    return data, columns
 
 
 if __name__ == "__main__":

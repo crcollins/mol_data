@@ -183,19 +183,21 @@ def load_data_from_db(prop=None, optsets=None, structsets=None, calcsets=None):
     if not all(x in CALCSETS for x in calcsets):
         return ValueError("Invalid calcsets: %s" % (calcsets, ))
 
+    where_cond = "optset in %s and structset in %s and calcset in %s" % (
+                tuple(optsets), tuple(structsets), tuple(calcsets))
+    where_cond = where_cond.replace(",)", ")")
+
     string = """
     SELECT d.name, group_concat(IFNULL(data.%s, ''))
     FROM (
         SELECT names.name, ds.id
         FROM (SELECT DISTINCT name FROM data) as names
-        CROSS JOIN (SELECT id FROM datasets WHERE optset in %s and structset in %s and calcset in %s) as ds
+        CROSS JOIN (SELECT id FROM datasets WHERE %s) as ds
         ) as d
     LEFT JOIN data
         ON d.name = data.name and d.id = data.dataset_id
     GROUP BY d.name;
-    """ % (prop, tuple(optsets), tuple(structsets), tuple(calcsets))
-    string = string.replace(",)", ")")
-    # print string
+    """ % (prop, where_cond)
 
     data = []
     with sqlite3.connect("database.sqlite") as conn:

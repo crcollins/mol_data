@@ -173,6 +173,40 @@ def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=True):
     return sorted(names), data
 
 
+def load_data_from_db(prop=None, optsets=None, structsets=None, calcsets=None):
+    if prop not in ['homo', 'lumo', 'excitation']:
+        return ValueError("Invalid property: %s" % prop)
+    if not all(x in OPTSETS for x in optsets):
+        return ValueError("Invalid optsets: %s" % (optsets, ))
+    if not all(x in STRUCTSETS for x in structsets):
+        return ValueError("Invalid structsets: %s" % (structsets, ))
+    if not all(x in CALCSETS for x in calcsets):
+        return ValueError("Invalid calcsets: %s" % (calcsets, ))
+
+    string = """
+    SELECT d.name, group_concat(IFNULL(data.%s, ''))
+    FROM (
+        SELECT names.name, ds.id
+        FROM (SELECT DISTINCT name FROM data) as names
+        CROSS JOIN (SELECT id FROM datasets WHERE optset in %s and structset in %s and calcset in %s) as ds
+        ) as d
+    LEFT JOIN data
+        ON d.name = data.name and d.id = data.dataset_id
+    GROUP BY d.name;
+    """ % (prop, tuple(optsets), tuple(structsets), tuple(calcsets))
+    string = string.replace(",)", ")")
+    # print string
+
+    data = []
+    with sqlite3.connect("database.sqlite") as conn:
+        for name, values in conn.execute(string):
+            try:
+                data.append((name, [float(x) if x else None for x in values.split(',')]))
+            except:
+                pass
+    return data
+
+
 if __name__ == "__main__":
     export_database(fill_null=True)
     # export_norm_name_database(fill_null=True)

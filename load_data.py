@@ -81,44 +81,12 @@ def build_data_table(data):
         """
         conn.executemany(string, data)
         conn.commit()
-
-
-def build_norm_name_data_table(data):
-    with sqlite3.connect("database.sqlite") as conn:
-        conn.execute("DROP TABLE IF EXISTS data")
-        string = """
-        CREATE TABLE data
-        (
-            id integer primary key,
-            name_id integer,
-            homo float,
-            lumo float,
-            excitation float,
-            dataset_id integer,
-            FOREIGN KEY(name_id) REFERENCES names(id),
-            FOREIGN KEY(dataset_id) REFERENCES datasets(id)
-        )
-        """
-        conn.execute(string)
-        conn.commit()
-
-        string = """
-        INSERT INTO data(name_id, homo, lumo, excitation, dataset_id)
-        VALUES
-        (
-            (
-                SELECT id FROM names
-                WHERE name=?
-            ),
-            ?,
-            ?,
             ?,
             (
                 SELECT id FROM datasets
                 WHERE optset=? and structset=? and calcset=?
             )
         )
-        """
         conn.executemany(string, data)
         conn.commit()
 
@@ -131,13 +99,6 @@ def export_database(fill_null=False):
 
 
 def export_norm_name_database(fill_null=True):
-    names, data = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS, fill_null=fill_null)
-
-    build_datasets_table(OPTSETS, STRUCTSETS, CALCSETS)
-    build_names_table(names)
-    build_norm_name_data_table(data)
-
-
 def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=True):
     names = {}
     for optset in optsets:
@@ -212,5 +173,5 @@ def load_data_from_db(prop=None, optsets=None, structsets=None, calcsets=None):
 
 
 if __name__ == "__main__":
-    export_database(fill_null=True)
-    # export_norm_name_database(fill_null=True)
+    export_database(fill_null=False)
+    p, col = load_data_from_db(prop="homo", optsets=OPTSETS, structsets=['O'], calcsets=['b3lyp'])

@@ -123,8 +123,6 @@ def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=False):
                     temp = names[(name, structset)].get((optset, calcset), [None, None, None])
                 else:
                     temp = names[(name, structset)].get((optset, calcset))
-                if name == "4ef4ef-4ef4ef":
-                    print [i+1] + temp + [optset, calcset]
                 data.append([i+1] + temp + [optset, calcset])
     return sorted_names, data
 

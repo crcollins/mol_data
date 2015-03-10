@@ -171,6 +171,40 @@ def load_data_from_db(prop=None, optsets=None, structsets=None, calcsets=None):
     return data, columns
 
 
+def get_missing_data(have_geom=False):
+    if have_geom:
+        addon = """
+        AND (d.name || d.optset) IN (
+            SELECT DISTINCT (n.name || ds.optset) FROM data
+            INNER JOIN names as n
+                ON data.name_id = n.id
+            INNER JOIN datasets as ds
+                ON data.dataset_id = ds.id
+            )
+        """
+    else:
+        addon = ""
+
+    string = """
+    SELECT d.name, d.optset, d.calcset
+    FROM (
+        SELECT names.id as name_id, names.name, ds.id as ds_id, ds.optset, ds.calcset
+        FROM (SELECT id, name FROM names) as names
+        CROSS JOIN (SELECT id, optset, calcset FROM datasets) as ds
+        ) as d
+    LEFT JOIN data
+        ON d.name_id = data.name_id and d.ds_id = data.dataset_id
+    WHERE
+        data.homo IS NULL
+        %s
+    ;
+    """ % addon
+
+    with sqlite3.connect("database.sqlite") as conn:
+        return [x for x in conn.execute(string)]
+
+
 if __name__ == "__main__":
-    # export_database(fill_null=False)
+    export_database(fill_null=False)
     p, col = load_data_from_db(prop="homo", optsets=OPTSETS, structsets=['O'], calcsets=['b3lyp'])
+    missing = get_missing_data()

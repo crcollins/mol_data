@@ -12,6 +12,16 @@ CALCSETS = methods + indo_methods
 PROPS = ["homo", "lumo", "excitation"]
 
 
+def input_check(prop=None, optsets=None, structsets=None, calcsets=None):
+    if prop not in PROPS:
+        return ValueError("Invalid property: %s" % prop)
+    if not all(x in OPTSETS for x in optsets):
+        return ValueError("Invalid optsets: %s" % (optsets, ))
+    if not all(x in STRUCTSETS for x in structsets):
+        return ValueError("Invalid structsets: %s" % (structsets, ))
+    if not all(x in CALCSETS for x in calcsets):
+        return ValueError("Invalid calcsets: %s" % (calcsets, ))
+
 
 def build_datasets_table(optsets, calcsets):
     with sqlite3.connect("database.sqlite") as conn:
@@ -130,14 +140,7 @@ def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=False):
 
 
 def load_data_from_db(prop=None, optsets=None, structsets=None, calcsets=None):
-    if prop not in ['homo', 'lumo', 'excitation']:
-        raise ValueError("Invalid property: %s" % prop)
-    if not all(x in OPTSETS for x in optsets):
-        raise ValueError("Invalid optsets: %s" % (optsets, ))
-    if not all(x in STRUCTSETS for x in structsets):
-        raise ValueError("Invalid structsets: %s" % (structsets, ))
-    if not all(x in CALCSETS for x in calcsets):
-        raise ValueError("Invalid calcsets: %s" % (calcsets, ))
+    input_check(prop=prop, optsets=optsets, structsets=structsets, calcsets=calcsets)
 
     where_cond1 = "structset in %s" % (tuple(structsets), )
     where_cond2 = "optset in %s and calcset in %s" % (tuple(optsets), tuple(calcsets))

@@ -209,6 +209,26 @@ def get_missing_data(have_geom=False):
         return [x for x in conn.execute(string)]
 
 
+def compare_optimizations(prop=None, optsets=None, structsets=None, calcsets=None):
+
+    data = []
+    for x in optsets:
+        p, _ = load_data_from_db(prop=prop, optsets=[x], structsets=structsets, calcsets=calcsets)
+        names, numbers = zip(*p)
+        data.append(sum(numbers,[]))
+    return data, optsets
+
+
+def compare_methods(prop=None, optsets=None, structsets=None, calcsets=None):
+
+    data = []
+    for x in calcsets:
+        p, _ = load_data_from_db(prop=prop, optsets=optsets, structsets=structsets, calcsets=[x])
+        names, numbers = zip(*p)
+        data.append(sum(numbers,[]))
+    return data, calcsets
+
+
 if __name__ == "__main__":
     export_database(fill_null=False)
     p, col = load_data_from_db(prop="homo", optsets=OPTSETS, structsets=['O'], calcsets=['b3lyp'])

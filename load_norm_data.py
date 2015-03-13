@@ -37,7 +37,8 @@ def build_datasets_table(optsets, calcsets):
         conn.execute(string)
 
         data = list(product(optsets, calcsets))
-        conn.executemany('INSERT INTO datasets(optset, calcset)  VALUES (?,?)', data)
+        string = "INSERT INTO datasets(optset, calcset)  VALUES (?,?)"
+        conn.executemany(string, data)
         conn.commit()
 
 
@@ -55,7 +56,8 @@ def build_names_table(names):
         conn.execute(string)
         conn.commit()
 
-        conn.executemany("INSERT INTO names(name, structset) VALUES (?, ?)", names)
+        string = "INSERT INTO names(name, structset) VALUES (?, ?)"
+        conn.executemany(, names)
         conn.commit()
 
 
@@ -97,7 +99,8 @@ def build_data_table(data):
 
 
 def export_database(fill_null=False):
-    names, data = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS, fill_null=fill_null)
+    names, data = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS,
+                                        fill_null=fill_null)
 
     build_datasets_table(OPTSETS, CALCSETS)
     build_names_table(names)
@@ -210,7 +213,6 @@ def get_missing_data(have_geom=False):
 
 
 def compare_optimizations(prop=None, optsets=None, structsets=None, calcsets=None):
-
     data = []
     for x in optsets:
         p, _ = load_data_from_db(prop=prop, optsets=[x], structsets=structsets, calcsets=calcsets)
@@ -220,7 +222,6 @@ def compare_optimizations(prop=None, optsets=None, structsets=None, calcsets=Non
 
 
 def compare_methods(prop=None, optsets=None, structsets=None, calcsets=None):
-
     data = []
     for x in calcsets:
         p, _ = load_data_from_db(prop=prop, optsets=optsets, structsets=structsets, calcsets=[x])

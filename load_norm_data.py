@@ -100,7 +100,7 @@ def build_data_table(data):
 
 def export_database(fill_null=False):
     names, data = load_data_for_db_insert(OPTSETS, STRUCTSETS, CALCSETS,
-                                        fill_null=fill_null)
+                                          fill_null=fill_null)
 
     build_datasets_table(OPTSETS, CALCSETS)
     build_names_table(names)
@@ -112,7 +112,7 @@ def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=False):
     for optset in optsets:
         for structset in structsets:
             for calcset in calcsets:
-                path = os.path.join(optset, structset, calcset+".txt")
+                path = os.path.join(optset, structset, calcset + ".txt")
                 if not os.path.exists(path):
                     continue
 
@@ -122,9 +122,11 @@ def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=False):
 
                         payload = [float(homo), float(lumo), float(gap)]
                         try:
-                            names[(name, structset)][(optset, calcset)] = payload
+                            names[(name, structset)][
+                                (optset, calcset)] = payload
                         except KeyError:
-                            names[(name, structset)] = {(optset, calcset): payload}
+                            names[(name, structset)] = {
+                                (optset, calcset): payload}
 
     sorted_names = sorted(names.keys())
     data = []
@@ -135,18 +137,21 @@ def load_data_for_db_insert(optsets, structsets, calcsets, fill_null=False):
                     continue
 
                 if fill_null:
-                    temp = names[(name, structset)].get((optset, calcset), [None, None, None])
+                    temp = names[(name, structset)].get(
+                        (optset, calcset), [None, None, None])
                 else:
                     temp = names[(name, structset)].get((optset, calcset))
-                data.append([i+1] + temp + [optset, calcset])
+                data.append([i + 1] + temp + [optset, calcset])
     return sorted_names, data
 
 
 def load_data_from_db(prop=None, optsets=None, structsets=None, calcsets=None):
-    input_check(prop=prop, optsets=optsets, structsets=structsets, calcsets=calcsets)
+    input_check(
+        prop=prop, optsets=optsets, structsets=structsets, calcsets=calcsets)
 
     where_cond1 = "structset in %s" % (tuple(structsets), )
-    where_cond2 = "optset in %s and calcset in %s" % (tuple(optsets), tuple(calcsets))
+    where_cond2 = "optset in %s and calcset in %s" % (
+        tuple(optsets), tuple(calcsets))
     where_cond1 = where_cond1.replace(",)", ")")
     where_cond2 = where_cond2.replace(",)", ")")
 
@@ -171,11 +176,13 @@ def load_data_from_db(prop=None, optsets=None, structsets=None, calcsets=None):
     with sqlite3.connect("database.sqlite") as conn:
         for name, values in conn.execute(string):
             try:
-                data.append((name, [float(x) if x else None for x in values.split(',')]))
+                data.append(
+                    (name, [float(x) if x else None for x in values.split(',')]))
             except:
                 pass
 
-    columns = [x for x in conn.execute("SELECT optset, calcset FROM datasets WHERE %s" % (where_cond2, ))]
+    string = "SELECT optset, calcset FROM datasets WHERE %s" % (where_cond2, )
+    columns = [x for x in conn.execute(string)]
     return data, columns
 
 
@@ -215,18 +222,20 @@ def get_missing_data(have_geom=False):
 def compare_optimizations(prop=None, optsets=None, structsets=None, calcsets=None):
     data = []
     for x in optsets:
-        p, _ = load_data_from_db(prop=prop, optsets=[x], structsets=structsets, calcsets=calcsets)
+        p, _ = load_data_from_db(
+            prop=prop, optsets=[x], structsets=structsets, calcsets=calcsets)
         names, numbers = zip(*p)
-        data.append(sum(numbers,[]))
+        data.append(sum(numbers, []))
     return data, optsets
 
 
 def compare_methods(prop=None, optsets=None, structsets=None, calcsets=None):
     data = []
     for x in calcsets:
-        p, _ = load_data_from_db(prop=prop, optsets=optsets, structsets=structsets, calcsets=[x])
+        p, _ = load_data_from_db(
+            prop=prop, optsets=optsets, structsets=structsets, calcsets=[x])
         names, numbers = zip(*p)
-        data.append(sum(numbers,[]))
+        data.append(sum(numbers, []))
     return data, calcsets
 
 

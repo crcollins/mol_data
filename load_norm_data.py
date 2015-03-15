@@ -57,7 +57,7 @@ def build_names_table(names):
         conn.commit()
 
         string = "INSERT INTO names(name, structset) VALUES (?, ?)"
-        conn.executemany(, names)
+        conn.executemany(string, names)
         conn.commit()
 
 

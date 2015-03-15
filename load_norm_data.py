@@ -2,6 +2,8 @@ import os
 import sqlite3
 from itertools import product
 
+import matplotlib.pyplot as plt
+
 
 methods = ["b3lyp", "cam", "m06hf"]
 indo_methods = ["indo_" + x for x in ["default"] + methods]
@@ -239,7 +241,21 @@ def compare_methods(prop=None, optsets=None, structsets=None, calcsets=None):
     return data, calcsets
 
 
+def plot_data(data, labels, title=''):
+    print [len([y for y in x if y is not None]) for x in data]
+    for x, label in zip(data, labels):
+        plt.plot(data[1], x, '.', label=label, alpha=.1)
+    plt.title(title)
+    plt.legend(loc='best')
+    plt.show()
+
 if __name__ == "__main__":
     export_database(fill_null=False)
     p, col = load_data_from_db(prop="homo", optsets=OPTSETS, structsets=['O'], calcsets=['b3lyp'])
-    missing = get_missing_data()
+
+    for prop in PROPS:
+        data, labels = compare_optimizations(prop=prop, optsets=OPTSETS, structsets=STRUCTSETS, calcsets=CALCSETS)
+        plot_data(data, labels)
+
+    missing = get_missing_data(have_geom=False)
+    print len(missing)

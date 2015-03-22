@@ -119,5 +119,5 @@ if __name__ == "__main__":
         data, labels = compare_optimizations(prop=prop, optsets=OPTSETS, structsets=['O'], calcsets=CALCSETS)
         plot_data(data, labels)
 
-    missing = get_missing_data(have_geom=False)
-    print len(missing)
+    # missing = get_missing_data(have_geom=False)
+    # print len(missing)

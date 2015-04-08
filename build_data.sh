@@ -74,5 +74,8 @@ EOF
 		done
 	done
 done
+
+find $main -name "*.txt" | xargs -P$(nproc) sed -i -e '/Using multi/d' -e '/100.0 100.0 100.0/d' -e '/Repulse/d'
+
 tar -cjf mol_data.tar.bz2 mol_data
 

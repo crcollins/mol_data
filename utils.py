@@ -5,7 +5,7 @@ methods = ["b3lyp", "cam", "m06hf"]
 indo_methods = ["indo_" + x for x in ["default"] + methods]
 
 OPTSETS = ["noopt"] + [os.path.join("opt", x) for x in methods]
-STRUCTSETS = ['O', 'N', "rot"]
+STRUCTSETS = ['O', 'N', "rot", "4", "8"]
 CALCSETS = methods + indo_methods
 PROPS = ["homo", "lumo", "excitation"]
 
